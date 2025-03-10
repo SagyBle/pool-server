@@ -1,11 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
-import { connectToDatabase } from "./lib/dbConnection";
+// import { connectToDatabase } from "./lib/dbConnection";
 import transactionRouter from "./routes/transaction.route";
 import bodyParser from "body-parser";
 import { errorHandler } from "./middleware/errorHandler";
 import apiRouter from "@src/routes/api.route";
 import cron from "node-cron";
+import MongoDbService from "./services/mongoDB.service";
 
 async function start() {
   dotenv.config({
@@ -23,8 +24,10 @@ async function start() {
   app.use(errorHandler);
 
   const SERVER_PORT = process.env.SERVER_PORT || 3001;
+  const MONGODB_URL = process.env.MONGODB_URL;
 
-  await connectToDatabase();
+  // await connectToDatabase();
+  await MongoDbService.connect(MONGODB_URL as string);
   app.listen(SERVER_PORT, () => {
     console.log(`Server is running on port ${SERVER_PORT}...`);
   });

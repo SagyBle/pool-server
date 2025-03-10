@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { httpResponse } from "../lib/httpResponse";
 import Transaction from "../models/transaction.model";
+import MongoDbService from "@src/services/mongoDB.service";
 
 /**
  * Controller for creating a new transaction.
@@ -19,12 +20,9 @@ export const createTransactionController = async (
       return;
     }
 
-    // // Create a new transaction
-    // const transaction = new Transaction({
-    //   description,
-    // });
-    // await transaction.save();
-    const transaction = await Transaction.create({ description: "!23" });
+    const transaction = await MongoDbService.create(Transaction, {
+      description: "123",
+    });
 
     httpResponse(res, 201, "Transaction created successfully", { transaction });
   } catch (error) {
