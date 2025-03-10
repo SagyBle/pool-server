@@ -7,6 +7,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import apiRouter from "@src/routes/api.route";
 import cron from "node-cron";
 import MongoDbService from "./services/mongoDB.service";
+import generalApiService from "./services/api/generalApi.service";
 
 async function start() {
   dotenv.config({
@@ -16,7 +17,7 @@ async function start() {
   const app = express();
   app.use(bodyParser.json());
 
-  app.get("/test", (req, res) => {
+  app.get("/test", async (req, res) => {
     res.send("🟢 Server Is Working 🟢");
   });
 
