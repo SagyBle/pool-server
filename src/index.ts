@@ -1,25 +1,23 @@
 import express from "express";
 import dotenv from "dotenv";
+
 import bodyParser from "body-parser";
 import { errorHandler } from "./middleware/errorHandler";
 import apiRouter from "@src/routes/api.route";
 import MongoDbService from "./services/mongoDB.service";
 import authRouter from "./routes/auth.route";
-import UniApiService from "./services/uni/uni.service";
+import UniApiService from "./services/uniApi/uni.api.service";
 import UniStoneParser from "./utils/parsers/uni/stone.uni.parser";
 import productAdminAppController from "./controllers/adminApp/productAdminApp.controller";
 
 async function start() {
-  dotenv.config({
-    path: "./.env",
-  });
-
   const app = express();
   app.use(bodyParser.json());
+  dotenv.config({ path: "./.env" });
 
   app.get("/test", async (req, res) => {
     // get diamonds from api
-    const r: any = await UniApiService.get("bla bla bla", undefined, true);
+    const r: any = await UniApiService.post("bla bla bla", undefined, {}, true);
     const stoneExample = r[0];
     console.log("sagy22", r[0]);
 

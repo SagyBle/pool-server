@@ -32,8 +32,8 @@ class ApiService {
         },
         timeout: 10000,
       };
-
       const response = await axios(config);
+
       return response;
     } catch (error) {
       console.error(
