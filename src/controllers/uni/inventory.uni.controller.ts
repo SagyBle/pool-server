@@ -1,16 +1,15 @@
 import UniApiService from "@src/services/uniApi/uni.api.service";
-import { Request, Response } from "express";
 import StoneUniLab from "../../models/stones/stoneUniLab.model";
 import data from "../../data/response.json";
 
-const fetchFullInventoryLab = async (req: Request, res: Response) => {
+const fetchFullInventoryLab = async (req: any, res: any) => {
   try {
     console.log("🔄 Fetching full uni inventory lab...");
     const response = await UniApiService.post(
       "/home/inventory",
       { exclude_naturals: 1, exclude_lab_growns: 0 },
       {},
-      true
+      { timeout: 900000, parseCsv: true } // ✅ Custom timeout and CSV parsing enabled
     );
 
     if (!response || !Array.isArray(response)) {
@@ -38,7 +37,7 @@ const fetchFullInventoryNatural = async (req: any, res: any) => {
       "/home/inventory",
       { exclude_naturals: 0, exclude_lab_growns: 1 },
       {},
-      true
+      { timeout: 900000, parseCsv: true }
     );
 
     if (!response) {
@@ -64,7 +63,7 @@ const fetchInventoryUpdates = async (req: any, res: any) => {
         updates_since: "1741931421",
       },
       {},
-      true
+      { timeout: 900000, parseCsv: true }
     );
 
     if (!response) {

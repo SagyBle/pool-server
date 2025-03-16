@@ -85,7 +85,7 @@ const getStones = async (req: any, res: any) => {
       "/home/inventory",
       { stones },
       {},
-      true
+      { parseCsv: true }
     );
 
     if (!response) {

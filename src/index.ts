@@ -17,7 +17,12 @@ async function start() {
 
   app.get("/test", async (req, res) => {
     // get diamonds from api
-    const r: any = await UniApiService.post("bla bla bla", undefined, {}, true);
+    const r: any = await UniApiService.post(
+      "bla bla bla",
+      undefined,
+      {},
+      { parseCsv: true }
+    );
     const stoneExample = r[0];
     console.log("sagy22", r[0]);
 

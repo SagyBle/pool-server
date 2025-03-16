@@ -13,19 +13,24 @@ class UniApiService extends ApiService {
   }
 
   /**
-   * POST request with optional CSV parsing
+   * POST request with optional CSV parsing via specialConfigs
    */
   public async post<T>(
     endpoint: string,
     data: object = {},
     headers: object = {},
-    parseCsv: boolean = false
+    specialConfigs?: { timeout?: number; parseCsv?: boolean }
   ): Promise<T | null> {
-    const response: any = await super.post(endpoint, data, headers);
+    const response: any = await super.post(
+      endpoint,
+      data,
+      headers,
+      specialConfigs
+    );
     if (!response) return null;
 
     try {
-      if (parseCsv) {
+      if (specialConfigs?.parseCsv) {
         return parse(response.data, {
           columns: true,
           skip_empty_lines: true,

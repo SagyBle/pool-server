@@ -1,5 +1,11 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
+interface SpecialConfigs {
+  timeout?: number;
+  parseCsv?: boolean;
+  additionalHeaders?: Record<string, string>;
+}
+
 class ApiService {
   protected baseURL: string;
   protected defaultHeaders: Record<string, string>;
@@ -13,13 +19,14 @@ class ApiService {
   }
 
   /**
-   * General request method
+   * General request method with optional special configs
    */
   protected async request(
     endpoint: string,
     method: "GET" | "POST" | "PUT" | "DELETE",
     data?: object,
-    headers?: object
+    headers?: object,
+    specialConfigs?: SpecialConfigs
   ): Promise<AxiosResponse | null> {
     try {
       const config: AxiosRequestConfig = {
@@ -28,12 +35,13 @@ class ApiService {
         data,
         headers: {
           ...this.defaultHeaders,
-          ...headers, // Merge custom headers
+          ...headers,
+          ...(specialConfigs?.additionalHeaders || {}),
         },
-        timeout: 900000,
+        timeout: specialConfigs?.timeout || 10000, // Default 900s unless overridden
       };
-      const response = await axios(config);
 
+      const response = await axios(config);
       return response;
     } catch (error) {
       console.error(
@@ -47,29 +55,59 @@ class ApiService {
   /**
    * GET request
    */
-  public async get(endpoint: string, headers?: object) {
-    return await this.request(endpoint, "GET", undefined, headers);
+  public async get(
+    endpoint: string,
+    headers?: object,
+    specialConfigs?: SpecialConfigs
+  ) {
+    return await this.request(
+      endpoint,
+      "GET",
+      undefined,
+      headers,
+      specialConfigs
+    );
   }
 
   /**
    * POST request
    */
-  public async post(endpoint: string, data: object, headers?: object) {
-    return await this.request(endpoint, "POST", data, headers);
+  public async post(
+    endpoint: string,
+    data: object,
+    headers?: object,
+    specialConfigs?: SpecialConfigs
+  ) {
+    return await this.request(endpoint, "POST", data, headers, specialConfigs);
   }
 
   /**
    * PUT request
    */
-  public async put(endpoint: string, data: object, headers?: object) {
-    return await this.request(endpoint, "PUT", data, headers);
+  public async put(
+    endpoint: string,
+    data: object,
+    headers?: object,
+    specialConfigs?: SpecialConfigs
+  ) {
+    return await this.request(endpoint, "PUT", data, headers, specialConfigs);
   }
 
   /**
    * DELETE request
    */
-  public async delete(endpoint: string, headers?: object) {
-    return await this.request(endpoint, "DELETE", undefined, headers);
+  public async delete(
+    endpoint: string,
+    headers?: object,
+    specialConfigs?: SpecialConfigs
+  ) {
+    return await this.request(
+      endpoint,
+      "DELETE",
+      undefined,
+      headers,
+      specialConfigs
+    );
   }
 }
 
