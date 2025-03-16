@@ -30,7 +30,7 @@ class ApiService {
           ...this.defaultHeaders,
           ...headers, // Merge custom headers
         },
-        timeout: 10000,
+        timeout: 900000,
       };
       const response = await axios(config);
 

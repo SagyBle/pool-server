@@ -7,6 +7,5 @@ const router = express.Router();
 
 router.use("/transaction", transactionRouter);
 router.use("/stonesApi", stonesApiRouter);
-router.use("/uni", uniRouter);
 
 export default router;
