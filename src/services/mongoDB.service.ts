@@ -1,4 +1,4 @@
-import mongoose, { Model, Document } from "mongoose";
+import mongoose, { Model, Document, FilterQuery } from "mongoose";
 
 class MongoDbService {
   /**
@@ -52,6 +52,28 @@ class MongoDbService {
       return await model.find();
     } catch (error) {
       console.error("❌ Error fetching documents:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Get documents by filter (Find where ...) with optional limit
+   */
+  static async getByBody<T extends Document>(
+    model: Model<T>,
+    filter: FilterQuery<T>,
+    limit?: number // ✅ Optional limit parameter
+  ): Promise<T[]> {
+    try {
+      const query = model.find(filter);
+
+      if (limit) {
+        query.limit(limit); // ✅ Apply limit if provided
+      }
+
+      return await query.exec();
+    } catch (error) {
+      console.error("❌ Error fetching documents by filter:", error);
       return [];
     }
   }

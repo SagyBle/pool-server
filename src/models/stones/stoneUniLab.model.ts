@@ -37,5 +37,5 @@ const StoneUniLabSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const StoneUniLab = mongoose.model("StoneUniLab", StoneUniLabSchema);
+const StoneUniLab = mongoose.model<any>("StoneUniLab", StoneUniLabSchema);
 export default StoneUniLab;

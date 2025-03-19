@@ -1,64 +1,53 @@
-interface Stone {
-  stone_id: string;
-  carat: string;
-  color: string;
-  shape: string;
-  cut: string;
-  clarity: string;
-  buy_price_total: string;
-  sku_url: string;
-  sku_url_2?: string;
-  sku_url_3?: string;
-}
-
-interface ParsedStone {
-  shape: string;
-  weight: string;
-  color: string;
-  cut: string;
-  clarity: string;
-  imageUrl: string;
-  alt: string;
-  price: string;
-  media: { alt: string; mediaContentType: string; originalSource: string }[];
-}
-
 export class UniStoneParser {
   /**
-   * Parses raw stone data into a structured format
+   * Parses raw uni stone data into a structured format to admin app.
    */
-  static parse(stoneData: any): ParsedStone[] {
-    return stoneData.map((stone: Stone) => {
-      // Normalize values
-      const shape = UniStoneParser.normalizeShape(stone.shape);
-      const weight = parseFloat(stone.carat).toFixed(2);
-      const color =
-        stone.color.length === 1 ? stone.color.toUpperCase() : "Unknown";
+  static parse(stoneData: any) {
+    if (!Array.isArray(stoneData)) {
+      stoneData = [stoneData];
+    }
 
-      const cut = UniStoneParser.normalizeCut(stone.cut);
-      const clarity = stone.clarity; // No normalization
-      const price = parseFloat(stone.buy_price_total).toFixed(2);
+    return stoneData.map((stone: any) => {
+      console.log("sagy102", "stone before parsing", { stone });
+      const stone_id = stone.stone_id;
+      const mongodb_id = stone._id;
 
-      // Image & Media Handling
-      const imageUrl = stone.sku_url || "";
-      const alt = `${weight}ct ${color} ${shape}, ${cut}, ${clarity}`;
+      const shape = this.normalizeShape(stone.shape);
+      const weight = this.normalizeWeight(stone.carat);
+      const color = this.normalizeColor(stone.color);
+
+      const cut = this.normalizeCut(stone.cut);
+      const lab = this.normalizeLab(stone.lab);
+      const clarity = this.normalizeClarity(stone.clarity);
+
+      const cost = this.normalizeCostPrice(stone.buy_price_total);
+      const price = this.normalizePrice(stone.buy_price_total);
+      const compareAtPrice = this.normalizeCompareAtPrice(
+        stone.buy_price_total
+      );
+
+      const imageUrl = stone.sku_url;
+      const alt = `${weight}ct ${color} ${shape}, ${cut}, ${clarity} image`;
       const media = [
         {
-          alt: `${weight}ct ${color} ${shape}, ${cut}, ${clarity} 1`,
+          alt,
           mediaContentType: "IMAGE",
           originalSource: imageUrl,
         },
       ];
 
       return {
+        stone_id,
+        mongodb_id,
         shape,
         weight,
         color,
         cut,
+        lab,
         clarity,
-        imageUrl,
-        alt,
+        cost,
         price,
+        compareAtPrice,
         media,
       };
     });
@@ -110,6 +99,43 @@ export class UniStoneParser {
       Poor: "Poor",
     };
     return cutMap[cut] || "Unknown";
+  }
+
+  /**
+   * Normalizes the cut value into 2 numbers after the decimal point.
+   */
+  private static normalizeWeight(carat: number): string {
+    console.log("sagy11", carat);
+    return carat.toFixed(2);
+  }
+
+  private static normalizeColor(color: string): string {
+    return color.toUpperCase();
+  }
+
+  private static normalizeClarity(clarity: string): string {
+    return clarity;
+  }
+
+  private static normalizePrice(cost: number): string {
+    const price = cost * 3; // 3x multiplier for price
+    console.log("sagy10 - Price:", price);
+    return price.toFixed(2);
+  }
+
+  private static normalizeCostPrice(cost: number): string {
+    console.log("sagy10 - Cost:", cost);
+    return cost.toFixed(2); // Cost remains unchanged (x)
+  }
+
+  private static normalizeCompareAtPrice(cost: number): string {
+    const compareAtPrice = cost * 4.5; // 4.5x multiplier for compare-at price
+    console.log("sagy10 - Compare At Price:", compareAtPrice);
+    return compareAtPrice.toFixed(2);
+  }
+
+  private static normalizeLab(lab: string): string {
+    return lab;
   }
 }
 

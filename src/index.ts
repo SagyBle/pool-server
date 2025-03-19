@@ -9,30 +9,33 @@ import authRouter from "./routes/auth.route";
 import UniApiService from "./services/uniApi/uni.api.service";
 import UniStoneParser from "./utils/parsers/uni/stone.uni.parser";
 import productAdminAppController from "./controllers/adminApp/productAdminApp.controller";
+import StoneUniLab from "./models/stones/stoneUniLab.model";
+import cors from "cors";
 
 async function start() {
   const app = express();
+
+  app.use(
+    cors({
+      origin: "*",
+    })
+  );
   app.use(bodyParser.json());
   dotenv.config({ path: "./.env" });
 
   app.get("/test", async (req, res) => {
     // get diamonds from api
-    const r: any = await UniApiService.post(
-      "bla bla bla",
-      undefined,
-      {},
-      { parseCsv: true }
-    );
-    const stoneExample = r[0];
-    console.log("sagy22", r[0]);
 
     // parse them
-    const parsedDiamond = UniStoneParser.parse([stoneExample]);
-    console.log("✅sagy3 Parsed Diamond:", parsedDiamond);
-    const [productData] = parsedDiamond;
+    // const parsedDiamond = UniStoneParser.parse([stoneExample]);
+
+    const stone = await StoneUniLab.findById("67d69bef1b006034c08b88f1");
+    console.log("sagy10", { stone });
+    const [parsedStone] = UniStoneParser.parse(stone);
+    console.log("sagy11", { parsedStone });
 
     const re = await productAdminAppController.createShopifyProduct(
-      productData
+      parsedStone
     );
 
     console.log("sagy123 re", re);
