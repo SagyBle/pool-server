@@ -5,7 +5,7 @@ import InventoryUniController from "@src/controllers/uni/inventory.uni.controlle
 import MongoDbService from "@src/services/mongoDB.service";
 import StoneUniLab from "@src/models/stones/stoneUniLab.model";
 import Transaction from "@src/models/transaction.model";
-import UniStoneParser from "@src/utils/parsers/uni/stone.uni.parser";
+import UniStoneParser from "@src/utils/parsers/stones/uni/stone.uni.parser";
 
 const router = express.Router();
 

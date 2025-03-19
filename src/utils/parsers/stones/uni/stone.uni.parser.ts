@@ -1,21 +1,23 @@
-export class UniStoneParser {
+import { StoneParser } from "../stone.parser.interface";
+
+export class UniStoneParser implements StoneParser {
   /**
-   * Parses raw uni stone data into a structured format to admin app.
+   * Parses raw uni stone data into a structured format.
    */
-  static parse(stoneData: any) {
+  public parse(stoneData: any) {
     if (!Array.isArray(stoneData)) {
       stoneData = [stoneData];
     }
 
     return stoneData.map((stone: any) => {
       console.log("sagy102", "stone before parsing", { stone });
+
       const stone_id = stone.stone_id;
       const mongodb_id = stone._id;
 
       const shape = this.normalizeShape(stone.shape);
       const weight = this.normalizeWeight(stone.carat);
       const color = this.normalizeColor(stone.color);
-
       const cut = this.normalizeCut(stone.cut);
       const lab = this.normalizeLab(stone.lab);
       const clarity = this.normalizeClarity(stone.clarity);
@@ -53,10 +55,7 @@ export class UniStoneParser {
     });
   }
 
-  /**
-   * Normalizes the shape value, handling both short and full forms
-   */
-  private static normalizeShape(shape: string): string {
+  public normalizeShape(shape: string): string {
     const shapeMap: Record<string, string> = {
       BR: "Round",
       Round: "Round",
@@ -82,10 +81,7 @@ export class UniStoneParser {
     return shapeMap[shape] || "Unknown";
   }
 
-  /**
-   * Normalizes the cut value, handling both abbreviations and full names
-   */
-  private static normalizeCut(cut: string): string {
+  public normalizeCut(cut: string): string {
     const cutMap: Record<string, string> = {
       EX: "Excellent",
       Excellent: "Excellent",
@@ -101,40 +97,37 @@ export class UniStoneParser {
     return cutMap[cut] || "Unknown";
   }
 
-  /**
-   * Normalizes the cut value into 2 numbers after the decimal point.
-   */
-  private static normalizeWeight(carat: number): string {
+  public normalizeWeight(carat: number): string {
     console.log("sagy11", carat);
     return carat.toFixed(2);
   }
 
-  private static normalizeColor(color: string): string {
+  public normalizeColor(color: string): string {
     return color.toUpperCase();
   }
 
-  private static normalizeClarity(clarity: string): string {
+  public normalizeClarity(clarity: string): string {
     return clarity;
   }
 
-  private static normalizePrice(cost: number): string {
+  public normalizePrice(cost: number): string {
     const price = cost * 3; // 3x multiplier for price
     console.log("sagy10 - Price:", price);
     return price.toFixed(2);
   }
 
-  private static normalizeCostPrice(cost: number): string {
+  public normalizeCostPrice(cost: number): string {
     console.log("sagy10 - Cost:", cost);
     return cost.toFixed(2); // Cost remains unchanged (x)
   }
 
-  private static normalizeCompareAtPrice(cost: number): string {
+  public normalizeCompareAtPrice(cost: number): string {
     const compareAtPrice = cost * 4.5; // 4.5x multiplier for compare-at price
     console.log("sagy10 - Compare At Price:", compareAtPrice);
     return compareAtPrice.toFixed(2);
   }
 
-  private static normalizeLab(lab: string): string {
+  public normalizeLab(lab: string): string {
     return lab;
   }
 }
