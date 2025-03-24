@@ -79,6 +79,37 @@ class MongoDbService {
   }
 
   /**
+   * Get documents by filter (Merges `instantFilters` and `persistentFilters`)
+   */
+  // static async getByBody<T extends Document>(
+  //   model: Model<T>,
+  //   instantFilters: FilterQuery<T>,
+  //   persistentFilterId?: string,
+  //   limit?: number
+  // ): Promise<T[]> {
+  //   try {
+  //     // Retrieve persistent filter if `persistentFilterId` is provided
+  //     const persistentFilter = await this.getPersistentFilter(
+  //       persistentFilterId
+  //     );
+
+  //     // Merge both filters (instant + persistent)
+  //     const mergedFilters = { ...persistentFilter, ...instantFilters };
+
+  //     const query = model.find(mergedFilters);
+
+  //     if (limit) {
+  //       query.limit(limit);
+  //     }
+
+  //     return await query.exec();
+  //   } catch (error) {
+  //     console.error("❌ Error fetching documents by filter:", error);
+  //     return [];
+  //   }
+  // }
+
+  /**
    * Update a document by ID
    */
   static async updateById<T extends Document>(

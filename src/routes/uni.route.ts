@@ -15,7 +15,6 @@ router.post("/test", async (req, res) => {
   // TODO: parse filters!!!
   const { color, shape, carat } = req.body;
 
-  // ✅ Convert carat to range (if provided)
   let caratFilter = {};
   if (carat) {
     const caratValue = Number(carat);

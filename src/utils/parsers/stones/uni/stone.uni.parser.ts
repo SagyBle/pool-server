@@ -1,10 +1,8 @@
-import { StoneParser } from "../stone.parser.interface";
-
-export class UniStoneParser implements StoneParser {
+export class UniStoneParser {
   /**
    * Parses raw uni stone data into a structured format.
    */
-  public parse(stoneData: any) {
+  public static parse(stoneData: any) {
     if (!Array.isArray(stoneData)) {
       stoneData = [stoneData];
     }
@@ -55,7 +53,7 @@ export class UniStoneParser implements StoneParser {
     });
   }
 
-  public normalizeShape(shape: string): string {
+  public static normalizeShape(shape: string): string {
     const shapeMap: Record<string, string> = {
       BR: "Round",
       Round: "Round",
@@ -81,7 +79,7 @@ export class UniStoneParser implements StoneParser {
     return shapeMap[shape] || "Unknown";
   }
 
-  public normalizeCut(cut: string): string {
+  public static normalizeCut(cut: string): string {
     const cutMap: Record<string, string> = {
       EX: "Excellent",
       Excellent: "Excellent",
@@ -97,37 +95,37 @@ export class UniStoneParser implements StoneParser {
     return cutMap[cut] || "Unknown";
   }
 
-  public normalizeWeight(carat: number): string {
+  public static normalizeWeight(carat: number): string {
     console.log("sagy11", carat);
     return carat.toFixed(2);
   }
 
-  public normalizeColor(color: string): string {
+  public static normalizeColor(color: string): string {
     return color.toUpperCase();
   }
 
-  public normalizeClarity(clarity: string): string {
+  public static normalizeClarity(clarity: string): string {
     return clarity;
   }
 
-  public normalizePrice(cost: number): string {
+  public static normalizePrice(cost: number): string {
     const price = cost * 3; // 3x multiplier for price
     console.log("sagy10 - Price:", price);
     return price.toFixed(2);
   }
 
-  public normalizeCostPrice(cost: number): string {
+  public static normalizeCostPrice(cost: number): string {
     console.log("sagy10 - Cost:", cost);
     return cost.toFixed(2); // Cost remains unchanged (x)
   }
 
-  public normalizeCompareAtPrice(cost: number): string {
+  public static normalizeCompareAtPrice(cost: number): string {
     const compareAtPrice = cost * 4.5; // 4.5x multiplier for compare-at price
     console.log("sagy10 - Compare At Price:", compareAtPrice);
     return compareAtPrice.toFixed(2);
   }
 
-  public normalizeLab(lab: string): string {
+  public static normalizeLab(lab: string): string {
     return lab;
   }
 }
