@@ -33,7 +33,7 @@ class MongoDbService {
    * Get a document by ID
    */
   static async getById<T extends Document>(
-    model: Model<T>,
+    model: Model<any>,
     id: string
   ): Promise<T | null> {
     try {
@@ -47,7 +47,7 @@ class MongoDbService {
   /**
    * Get all documents from a collection
    */
-  static async getAll<T extends Document>(model: Model<T>): Promise<T[]> {
+  static async getAll<T extends Document>(model: Model<any>): Promise<T[]> {
     try {
       return await model.find();
     } catch (error) {
@@ -60,7 +60,7 @@ class MongoDbService {
    * Get documents by filter (Find where ...) with optional limit
    */
   static async getByBody<T extends Document>(
-    model: Model<T>,
+    model: Model<any>,
     filter: FilterQuery<T>,
     limit?: number // ✅ Optional limit parameter
   ): Promise<T[]> {
@@ -113,7 +113,7 @@ class MongoDbService {
    * Update a document by ID
    */
   static async updateById<T extends Document>(
-    model: Model<T>,
+    model: Model<any>,
     id: string,
     updateData: Partial<T>
   ): Promise<T | null> {
@@ -129,7 +129,7 @@ class MongoDbService {
    * Delete a document by ID
    */
   static async deleteById<T extends Document>(
-    model: Model<T>,
+    model: Model<any>,
     id: string
   ): Promise<boolean> {
     try {

@@ -13,8 +13,9 @@ router.post("/test", async (req, res) => {
 
 // CRUD bb inventory
 router.post("/createStone", bbInventoryController.createStone);
-// router.get("/getStones", bbInventoryController.getStones);
-// router.put("/updateStone", bbInventoryController.updateStone);
-// router.delete("/deleteStone", bbInventoryController.deleteStone);
+router.get("/getStones", bbInventoryController.getStones);
+router.get("/getStone/:stoneId", bbInventoryController.getStone);
+router.put("/updateStone", bbInventoryController.updateStone);
+router.delete("/deleteStone", bbInventoryController.deleteStone);
 
 export default router;
