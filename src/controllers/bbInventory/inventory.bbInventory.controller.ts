@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import StoneBBLab from "../../models/stones/stoneBBLab.model"; // ✅ adjust path if needed
 import StoneBBNatural from "@src/models/stones/stoneBBNatural.model";
+import MongoDbService from "@src/services/mongoDB.service";
 
 const createStone = async (req: any, res: any) => {
   try {
@@ -11,14 +12,18 @@ const createStone = async (req: any, res: any) => {
     // check stone type
     console.log("body", body);
     if (body.stoneType === "Lab Grown") {
-      stone = await StoneBBLab.insertOne(body);
+      stone = await MongoDbService.create(StoneBBLab, body);
     } else if (body.stoneType === "Natural") {
-      stone = await StoneBBNatural.insertOne(body);
+      stone = await MongoDbService.create(StoneBBNatural, body);
     } else {
       return res.status(400).json({ message: "Invalid stone type" });
     }
 
     console.log("✅ New stone inserted:", stone);
+
+    if (!stone) {
+      return res.status(500).json({ message: "Failed to create stone" });
+    }
 
     return res
       .status(201)
@@ -33,4 +38,7 @@ const createStone = async (req: any, res: any) => {
 
 export default {
   createStone,
+  // getStones,
+  // updateStone,
+  // deleteStone,
 };

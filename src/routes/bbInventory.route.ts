@@ -11,6 +11,10 @@ router.post("/test", async (req, res) => {
   res.send("ok");
 });
 
+// CRUD bb inventory
 router.post("/createStone", bbInventoryController.createStone);
+// router.get("/getStones", bbInventoryController.getStones);
+// router.put("/updateStone", bbInventoryController.updateStone);
+// router.delete("/deleteStone", bbInventoryController.deleteStone);
 
 export default router;

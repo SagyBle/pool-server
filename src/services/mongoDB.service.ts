@@ -17,7 +17,7 @@ class MongoDbService {
    * Create a new document in the collection
    */
   static async create<T extends Document>(
-    model: Model<T>,
+    model: Model<any>,
     data: Partial<T>
   ): Promise<T | null> {
     try {
