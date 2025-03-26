@@ -15,7 +15,7 @@ const StoneBBNaturalSchema = new mongoose.Schema(
     imageUrl: { type: String, required: true },
     stoneType: { type: String, required: true }, // "Lab Grown" or "Natural"
     purchasedDate: { type: String, required: true }, // keep string or convert to Date if needed
-    isShopifyProduct: { type: Boolean, required: true },
+    isShopifyProduct: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

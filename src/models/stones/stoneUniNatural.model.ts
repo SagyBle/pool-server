@@ -40,7 +40,7 @@ const StoneUniNaturalSchema = new mongoose.Schema(
     natural_diamond: { type: Boolean, required: true },
     estimated_delivery: { type: String, default: "" },
     updated_on: { type: Number, required: true },
-    isShopifyProduct: { type: Boolean, required: true },
+    isShopifyProduct: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );
