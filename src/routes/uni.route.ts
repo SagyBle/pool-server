@@ -61,7 +61,7 @@ router.post(
   "/fetch-full-inventory/natural",
   InventoryUniController.fetchFullInventoryNatural
 );
-router.post(
+router.put(
   "/fetch-inventory-updates",
   InventoryUniController.fetchInventoryUpdates
 );
