@@ -34,6 +34,7 @@ const StoneUniLabSchema = new mongoose.Schema(
     estimated_delivery: { type: String, default: "" },
     updated_on: { type: Number, required: true },
     isShopifyProduct: { type: Boolean, required: true, default: false },
+    purchased: { type: Object, default: {} },
   },
   { timestamps: true }
 );

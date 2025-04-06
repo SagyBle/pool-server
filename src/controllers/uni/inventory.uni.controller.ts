@@ -1,35 +1,56 @@
 import UniApiService from "@src/services/uniApi/uni.api.service";
 import StoneUniLab from "../../models/stones/stoneUniLab.model";
-import data from "../../data/response.json";
+import data from "../../data/responseFilteredLab.json";
 import natural from "../../data/natural.json";
 import StoneUniNatural from "@src/models/stones/stoneUniNatural.model";
 import { parseInventoryUpdates } from "@src/utils/parsers/stones/uni/inventoryUpdate.uni.parser";
 import { InventoryUpdateTypes } from "@src/types/inventoryUpdates.types";
+import fs from "fs";
+import path from "path";
 
 const fetchFullInventoryLab = async (req: any, res: any) => {
   try {
-    console.log("🔄 Fetching full uni inventory lab...");
-    // const response = await UniApiService.post(
-    //   "/home/inventory",
-    //   { exclude_naturals: 1, exclude_lab_growns: 0 },
-    //   {},
-    //   { timeout: 900000, parseCsv: true } // ✅ Custom timeout and CSV parsing enabled
-    // );
+    console.log("🔄 Step 1: Fetching full Uni lab-grown inventory...");
 
-    const response = await importStoneUniLabJSONToDB();
+    const response: any[] | null = await UniApiService.post(
+      "/home/inventory",
+      { exclude_naturals: 1, exclude_lab_growns: 0 },
+      {},
+      { timeout: 900000, parseCsv: true }
+    );
 
-    if (!response || !Array.isArray(response)) {
-      console.error("❌ Failed to fetch or invalid inventory data");
-      return res.status(500).json({ error: "Invalid inventory data" });
+    if (!response || !Array.isArray(response) || response.length === 0) {
+      console.error("❌ Step 2: Empty or invalid response from Uni.");
+      return res
+        .status(500)
+        .json({ error: "Fetching Labgrown inventory from Uni failed" });
     }
 
-    // ✅ Insert API response directly into MongoDB
-    await StoneUniLab.insertMany(response);
+    console.log(
+      `✅ Step 2: Successfully fetched ${response.length} inventory items.`
+    );
+
+    console.log("🛠️ Step 3: Inserting inventory into MongoDB...");
+
+    const responseDB = await StoneUniLab.insertMany(response);
+
+    if (!responseDB || responseDB.length === 0) {
+      console.error("❌ Step 4: MongoDB insert failed or returned no items.");
+      return res
+        .status(500)
+        .json({ error: "Failed to insert inventory into DB" });
+    }
+
+    console.log(
+      `✅ Step 5: Successfully inserted ${responseDB.length} items into MongoDB.`
+    );
+
     console.log("✅ Inventory successfully inserted into MongoDB!");
 
-    return res
-      .status(200)
-      .json({ message: "Inventory fetched and stored successfully" });
+    return res.status(200).json({
+      message: "✅ Inventory fetched and stored successfully",
+      insertedCount: responseDB.length,
+    });
   } catch (error) {
     console.error("❌ Error fetching or storing full inventory (lab):", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -39,24 +60,51 @@ const fetchFullInventoryLab = async (req: any, res: any) => {
 // TODO: make it work as lab!
 const fetchFullInventoryNatural = async (req: any, res: any) => {
   try {
-    // const response = await UniApiService.post(
-    //   "/home/inventory",
-    //   { exclude_naturals: 0, exclude_lab_growns: 1 },
-    //   {},
-    //   { timeout: 900000, parseCsv: true }
-    // );
+    console.log("🔄 Step 1: Fetching full Uni natural inventory...");
 
-    const response = await importStoneUniNaturalJSONToDB();
+    const response: any[] | null = await UniApiService.post(
+      "/home/inventory",
+      { exclude_naturals: 0, exclude_lab_growns: 1 },
+      {},
+      { timeout: 900000, parseCsv: true }
+    );
 
-    if (!response) {
+    if (!response || !Array.isArray(response) || response.length === 0) {
+      console.error("❌ Step 2: Empty or invalid response from Uni.");
       return res
         .status(500)
-        .json({ error: "Failed to fetch full inventory (natural)" });
+        .json({ error: "Fetching Natural inventory from Uni failed" });
     }
 
-    return res.status(200).json(response);
+    console.log(
+      `✅ Step 2: Successfully fetched ${response.length} inventory items.`
+    );
+
+    console.log("🛠️ Step 3: Inserting inventory into MongoDB...");
+
+    const responseDB = await StoneUniNatural.insertMany(response);
+
+    if (!responseDB || responseDB.length === 0) {
+      console.error(
+        "❌ Step 4: MongoDB insert to StoneUniNatural failed or returned no items."
+      );
+      return res
+        .status(500)
+        .json({ error: "Failed to insert inventory into StoneUniNatural DB" });
+    }
+
+    console.log(
+      `✅ Step 5: Successfully inserted ${responseDB.length} items into MongoDB.`
+    );
+
+    console.log("✅ Inventory successfully inserted into MongoDB!");
+
+    return res.status(200).json({
+      message: "✅ Inventory fetched and stored successfully",
+      insertedCount: responseDB.length,
+    });
   } catch (error) {
-    console.error("❌ Error fetching full inventory (natural):", error);
+    console.error("❌ Error fetching or storing full inventory (lab):", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -79,17 +127,17 @@ const fetchInventoryUpdates = async (req: any, res: any) => {
 
     const mockResponse = [
       {
-        stone_id: "888",
+        stone_id: "003",
         lab: "GIA",
         active: "0",
         reserved: "0",
         reserved_till: "0",
-        carat: "0.500",
+        carat: "2.10",
         buy_price_per_carat: "1442.22",
         buy_price_total: "721.11",
-        shape: "PR",
-        color: "F",
-        clarity: "VVS2",
+        shape: "OV",
+        color: "E",
+        clarity: "VS1",
         cut: "",
         polish: "EX",
         symmetry: "VG",

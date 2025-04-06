@@ -115,12 +115,30 @@ class MongoDbService {
   static async updateById<T extends Document>(
     model: Model<any>,
     id: string,
-    updateData: Partial<T>
+    updateData: any
   ): Promise<T | null> {
     try {
       return await model.findByIdAndUpdate(id, updateData, { new: true });
     } catch (error) {
       console.error("❌ Error updating document:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Update a document using any field (not just _id)
+   */
+  static async updateByField<T extends Document>(
+    model: Model<any>,
+    field: string,
+    value: any,
+    updateData: any
+  ): Promise<T | null> {
+    try {
+      const filter: any = { [field]: value };
+      return await model.findOneAndUpdate(filter, updateData, { new: true });
+    } catch (error) {
+      console.error(`❌ Error updating document by field '${field}':`, error);
       return null;
     }
   }
