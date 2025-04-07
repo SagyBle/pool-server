@@ -57,6 +57,46 @@ const getStones = async (req: any, res: any) => {
   }
 };
 
+const getFilteredStones = async (req: any, res: any) => {
+  try {
+    console.log("sagy22");
+
+    const { stoneType } = req.body;
+    const filters = req.body || {};
+    // console.log("sagy27", body);
+
+    // console.log("sagy23", { stoneType, ...filters });
+
+    let model;
+    if (stoneType === "Lab Grown") {
+      model = StoneBBLab;
+    } else if (stoneType === "Natural") {
+      model = StoneBBNatural;
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Missing or invalid stoneType in request body" });
+    }
+
+    // Clean up filters (remove undefined or empty values)
+    const cleanedFilters = Object.fromEntries(
+      Object.entries(filters).filter(
+        ([_, value]) => value !== undefined && value !== ""
+      )
+    );
+
+    const stones = await MongoDbService.getByBody(model, filters);
+
+    return res.status(200).json({ bbStones: stones });
+    // return res.status(200).json({ bbStones: stones });
+  } catch (error: any) {
+    console.error("❌ Failed to get filtered stones:", error);
+    return res
+      .status(500)
+      .json({ error: error.message || "Internal server error" });
+  }
+};
+
 const getStone = async (req: any, res: any) => {
   try {
     const { stoneId } = req.params;
@@ -169,6 +209,7 @@ const deleteStone = async (req: any, res: any) => {
 export default {
   createStone,
   getStones,
+  getFilteredStones,
   getStone,
   updateStone,
   deleteStone,

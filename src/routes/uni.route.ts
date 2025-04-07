@@ -6,27 +6,28 @@ import MongoDbService from "@src/services/mongoDB.service";
 import StoneUniLab from "@src/models/stones/stoneUniLab.model";
 import Transaction from "@src/models/transaction.model";
 import UniStoneParser from "@src/utils/parsers/stones/uni/stone.uni.parser";
+import { FiltersUniStoneParser } from "@src/utils/parsers/stones/uni/filters.stones.uni.parser";
 
 const router = express.Router();
 
 router.post("/test", async (req, res) => {
-  console.log("📝 Received Filters:", req.body);
+  console.log("📝 sagy135", "Received Filters:", req.body);
 
-  // TODO: parse filters!!!
-  const { color, shape, carat } = req.body;
-
-  let caratFilter = {};
-  if (carat) {
-    const caratValue = Number(carat);
-    if (!isNaN(caratValue) && caratValue > 0) {
-      caratFilter = { carat: { $gte: caratValue - 0.1, $lte: caratValue } };
-    }
-  }
-
-  const filters = { color, shape, ...caratFilter };
+  // TODO: Create a parser that will parse the filters like uni wants them in the mongodb
+  const { filters } = req.body;
+  const parsedUniFilters = FiltersUniStoneParser.parse(filters);
+  console.log("sagy100", { parsedUniFilters });
 
   try {
-    const response = await MongoDbService.getByBody(StoneUniLab, filters, 5);
+    console.log("sagy100", { parsedUniFilters });
+
+    const response = await MongoDbService.getByBody(
+      StoneUniLab,
+      parsedUniFilters,
+      5
+    );
+
+    console.log("sagy101", response);
 
     if (!response || !Array.isArray(response)) {
       throw new Error("❌ Fetch Stones Failed");
@@ -35,7 +36,7 @@ router.post("/test", async (req, res) => {
     const parsedStones = UniStoneParser.parse(response);
     console.log("sagy103", { parsedStones });
 
-    res.status(200).json(parsedStones);
+    res.status(200).json({ uniStones: parsedStones });
   } catch (error) {
     console.error("❌ Error fetching stones:", error);
     res.status(500).json({ error: "Internal Server Error" });

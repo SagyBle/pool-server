@@ -3,13 +3,15 @@ import bbInventoryController from "../controllers/bbInventory/inventory.bbInvent
 
 const router = express.Router();
 
-router.post("/test", async (req, res) => {
+router.post("/bla", async (req, res) => {
   console.log("received request");
 
   const { body } = req;
   console.log("sagy13", body);
-  res.send("ok");
+  res.json({ ok: "ok" });
 });
+
+router.post("/getFilteredStones", bbInventoryController.getFilteredStones);
 
 // CRUD bb inventory
 router.post("/createStone", bbInventoryController.createStone);
